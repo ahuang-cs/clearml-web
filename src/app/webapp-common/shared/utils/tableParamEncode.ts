@@ -168,24 +168,32 @@ export const decodeHyperParam = (col: ISmCol): { name: string; section: string }
   return {section, name: name.join('.')};
 };
 
-export const createMetricColumn = (column: MetricColumn, projectId: string): ISmCol => ({
-  id: `last_metrics.${column.metricHash}.${column.variantHash}.${column.valueType || 'value'}`,
-  headerType: ColHeaderTypeEnum.sortFilter,
-  sortable: true,
-  filterable: true,
-  filterType: ColHeaderFilterTypeEnum.durationNumeric,
-  header: `${column.metric} ${metricVariantDelimiter} ${column.variant}${getValueTypeName(column.valueType) ? ' ' + getValueTypeName(column.valueType) : ''}`,
-  hidden: false,
+export const createMetricColumn = (column: MetricColumn, projectId: string): ISmCol => {
+  const isSummary = column.metric === 'Summary';
 
-  metric_hash: column.metricHash,
-  variant_hash: column.variantHash,
+  return {
+    id: `last_metrics.${column.metricHash}.${column.variantHash}.${column.valueType || 'value'}`,
+    headerType: ColHeaderTypeEnum.sortFilter,
+    sortable: true,
+    filterable: true,
+    filterType: ColHeaderFilterTypeEnum.durationNumeric,
 
-  valueType: column.valueType,
-  projectId,
-  style: {width: '115px'},
-  metricName: column.metric,
-  variantName: column.variant
-});
+    header: `${isSummary ? '' : column.metric + ' '}${column.variant}${
+      column.valueType ? ' ' + getValueTypeName(column.valueType) : ''
+    }${isSummary ? ' (Summary)' : ''}`,
+
+    hidden: false,
+
+    metric_hash: column.metricHash,
+    variant_hash: column.variantHash,
+
+    valueType: column.valueType,
+    projectId,
+    style: {width: '115px'},
+    metricName: column.metric,
+    variantName: column.variant
+  };
+};
 
 export const createCompareMetricColumn = (column: MetricVariantResult, hideList = []): Partial<ISmCol> => ({
   id: `last_metrics.${column.metric_hash}.${column.variant_hash}.value`,
