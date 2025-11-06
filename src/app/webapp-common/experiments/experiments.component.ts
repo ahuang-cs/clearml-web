@@ -576,13 +576,18 @@ export class ExperimentsComponent extends BaseEntityPageComponent implements OnI
   }
 
   createParamColumn(param: string, projectId?: string): ISmCol {
+    const raw = decodeURIComponentSafe(param.replace('hyperparams.', ''));
+    const headerText = raw.startsWith('General.')
+      ? raw.replace(/^General\.\s*/, '') + ' (General)'
+      : raw;
+
     return {
       id: param,
       getter: encodeHyperParameter(param),
       headerType: ColHeaderTypeEnum.sortFilter,
       sortable: true,
       filterable: true,
-      header: decodeURIComponentSafe(param.replace('hyperparams.', '')),
+      header: headerText,
       hidden: false,
       projectId: projectId || this.projectId,
       isParam: true,
