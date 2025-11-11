@@ -4,7 +4,7 @@
   "license": "",
   "scripts": {
     "ng": "ng",
-    "start": "npx ng serve",
+    "start": "npx ng serve --host 0.0.0.0 --port 443 --ssl true --ssl-cert certs/server.crt --ssl-key certs/server.key",
     "start-widgets": "npx ng serve --port 4201 --project report-widgets --proxy-config proxy.config.mjs --live-reload false",
     "hmr": "npx ng serve --live-reload true",
     "build": "npx ng build --configuration production --source-map",
